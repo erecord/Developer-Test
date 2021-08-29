@@ -1,8 +1,9 @@
 mode: chatops
-silent: true
 gitSafeReplacementChar: "-"
 branchName: "${issue.number}-${issue.title,}"
 autoCloseIssue: true
 branches:
   - label: enhancement
-    prefix: feature/${issue.user.login}/
+    prefix: feature/${sender.login}/
+  - label: bug
+    prefix: bugfix/${sender.login}/
