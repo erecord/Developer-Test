@@ -6,4 +6,4 @@ WORKDIR /source
 COPY *.csproj ./
 RUN dotnet restore
 
-ENTRYPOINT [ "dotnet", "watch", "run", "-r", "linux-x64", "--launch-profile", "aspnetweb"]
+ENTRYPOINT [ "dotnet", "watch", "run", "-r", "linux-x64", "--launch-profile", "aspmvc"]
