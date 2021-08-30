@@ -1,0 +1,25 @@
+version: "3.4"
+
+services:
+  backend:
+    image: store_backend
+    container_name: store_backend
+    env_file:
+    - ./backend/dev.env
+    volumes:
+      - ./backend:/source
+      - AspDataProtectionKeys:/root/.aspnet/DataProtection-Keys
+
+  db:
+    image: store_db
+    container_name: store_db
+    build:
+      context: ./mssql
+      dockerfile: ./Dockerfile
+    env_file:
+      - ./mssql/.env
+    ports:
+      - 1433:1433
+
+volumes:
+  AspDataProtectionKeys:
