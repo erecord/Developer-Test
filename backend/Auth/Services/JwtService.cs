@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using StoreBackend.Auth.Interfaces;
-using StoreBackend.Auth.Models;
+using StoreBackend.Models;
 
 namespace StoreBackend.Auth.Services
 {
