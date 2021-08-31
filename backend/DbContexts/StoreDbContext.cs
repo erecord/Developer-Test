@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using StoreBackend.Models;
 
-namespace StoreBackend.Auth
+namespace StoreBackend.DbContexts
 {
     public class StoreDbContext : DbContext
     {
@@ -14,6 +14,7 @@ namespace StoreBackend.Auth
         public DbSet<User> User { get; set; }
         public DbSet<Basket> Basket { get; set; }
         public DbSet<Product> Product { get; set; }
+        public DbSet<BasketProduct> BasketProducts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -22,6 +23,7 @@ namespace StoreBackend.Auth
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
 
+            builder.Entity<BasketProduct>().HasKey(bp => new { bp.BasketId, bp.ProductId });
         }
 
         public static void RegisterService(IServiceCollection services)

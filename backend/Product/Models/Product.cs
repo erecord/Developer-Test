@@ -11,8 +11,5 @@ namespace StoreBackend.Models
         public string Name { get; set; }
         public float Price { get; set; }
 
-        [JsonIgnore]
-        public List<Basket> Baskets { get; set; }
-
     }
 }

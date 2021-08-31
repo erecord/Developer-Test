@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using StoreBackend.Auth;
 using StoreBackend.Auth.Extensions;
 using StoreBackend.Auth.Interfaces;
+using StoreBackend.DbContexts;
 using StoreBackend.Models;
 using BC = BCrypt.Net.BCrypt;
 

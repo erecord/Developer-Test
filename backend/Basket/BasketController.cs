@@ -4,7 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using StoreBackend.Auth;
+using StoreBackend.DbContexts;
+using StoreBackend.Facade;
 using StoreBackend.Models;
 
 namespace StoreBackend.Controllers
@@ -14,17 +15,19 @@ namespace StoreBackend.Controllers
     public class BasketController : ControllerBase
     {
         private readonly StoreDbContext _context;
+        private readonly BasketControllerFacade _controllerFacade;
 
-        public BasketController(StoreDbContext context)
+        public BasketController(StoreDbContext context, BasketControllerFacade basketControllerFacade)
         {
             _context = context;
+            _controllerFacade = basketControllerFacade;
         }
 
         // GET: api/Basket
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Basket>>> GetBasket()
         {
-            return await _context.Basket.Include(p => p.Products).ToListAsync();
+            return await _context.Basket.ToListAsync();
         }
 
         // GET: api/Basket/5
@@ -38,22 +41,37 @@ namespace StoreBackend.Controllers
                 return NotFound();
             }
 
+            _controllerFacade.QueryProductsInBasketCommand.Execute(id);
+            basket.Products = _controllerFacade.QueryProductsInBasketCommand.ProductsInBasket.ToList();
+
             return basket;
         }
 
         // PUT: api/Basket/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBasket(int id, Basket basket)
+        public async Task<IActionResult> PutBasket(int id, UpdateBasketDTO updateBasketDTO)
         {
-            if (id != basket.Id)
+            if (id != updateBasketDTO.Basket.Id)
             {
                 return BadRequest();
             }
 
+            _controllerFacade.QueryProductIdsInBasketCommand.Execute(id);
+            var productIdsInBasket = _controllerFacade.QueryProductIdsInBasketCommand.ProductIdsInBasket.ToList();
 
-            basket.Products.ForEach(p => _context.Entry(p).State = EntityState.Modified);
-            _context.Entry(basket).State = EntityState.Modified;
+            var removedProductIds = productIdsInBasket.Except(updateBasketDTO.ProductIds);
+            var newProductIds = updateBasketDTO.ProductIds.Except(productIdsInBasket);
+
+            newProductIds.ToList().ForEach(productId =>
+            {
+                _context.BasketProducts.Add(new BasketProduct { BasketId = id, ProductId = productId });
+            });
+
+            var removedBasketProducts = _context.BasketProducts.Where(bp => removedProductIds.Contains(bp.ProductId)).ToList();
+            _context.BasketProducts.RemoveRange(removedBasketProducts);
+
+            _context.Entry(updateBasketDTO.Basket).State = EntityState.Modified;
 
             try
             {
@@ -71,7 +89,7 @@ namespace StoreBackend.Controllers
                 }
             }
 
-            return Ok(basket);
+            return Ok(updateBasketDTO.Basket);
         }
 
         // POST: api/Basket
