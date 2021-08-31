@@ -32,11 +32,9 @@ namespace StoreBackend.Auth.Services
             return tokenHandler.WriteToken(token);
         }
 
-        public static void RegisterService(IServiceCollection servies)
+        public void RegisterAuthenticationService(IServiceCollection services)
         {
-            servies.AddSingleton<IJwtService>(new JwtService());
-
-            servies.AddAuthentication(options =>
+            services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;

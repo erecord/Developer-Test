@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using StoreBackend.Auth.Services;
 using StoreBackend.DbContexts;
 using StoreBackend.Modules;
 
@@ -37,9 +36,8 @@ namespace StoreBackend
 
             services.AddDataProtection().PersistKeysToFileSystem(new DirectoryInfo("/root/.aspnet/DataProtection-Keys"));
 
-            JwtService.RegisterService(services);
-            StoreDbContext.RegisterService(services);
-
+            new RegisterDbContexts(services);
+            new RegisterAuthModule(services);
             new RegisterBasketModule(services);
         }
 
