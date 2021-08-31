@@ -1,6 +1,4 @@
-using System;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using StoreBackend.Models;
 
 namespace StoreBackend.DbContexts
@@ -14,6 +12,7 @@ namespace StoreBackend.DbContexts
         public DbSet<User> User { get; set; }
         public DbSet<Basket> Basket { get; set; }
         public DbSet<Product> Product { get; set; }
+        public DbSet<Discount> Discount { get; set; }
         public DbSet<BasketProduct> BasketProducts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -24,13 +23,6 @@ namespace StoreBackend.DbContexts
             // Add your customizations after calling base.OnModelCreating(builder);
 
             builder.Entity<BasketProduct>().HasKey(bp => new { bp.BasketId, bp.ProductId });
-        }
-
-        public static void RegisterService(IServiceCollection services)
-        {
-
-            services.AddDbContext<StoreDbContext>(options => options.UseSqlServer(Environment.GetEnvironmentVariable("StoreDbContextConnection")));
-
         }
     }
 }

@@ -34,7 +34,7 @@ namespace StoreBackend.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Basket>> GetBasket(int id)
         {
-            var basket = await _context.Basket.FindAsync(id);
+            var basket = await _context.Basket.Include(b => b.Discount).FirstAsync(p => p.Id == id);
 
             if (basket == null)
             {
