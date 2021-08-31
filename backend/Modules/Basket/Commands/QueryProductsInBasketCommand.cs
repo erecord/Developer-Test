@@ -24,7 +24,6 @@ namespace StoreBackend.Commands
         {
             if (parameter is int basketId)
             {
-
                 var productIdsInBasket = _context.BasketProducts.Where(bp => bp.BasketId == basketId).Select(bp => bp.ProductId);
                 var productsInBasket = _context.Product.Where(p => productIdsInBasket.Contains(p.Id));
                 ProductsInBasket = productsInBasket;
