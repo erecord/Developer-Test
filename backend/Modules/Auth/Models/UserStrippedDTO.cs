@@ -1,5 +1,5 @@
 
-namespace StoreBackend.Auth.Models
+namespace StoreBackend.Models
 {
     public class UserStrippedDTO
     {

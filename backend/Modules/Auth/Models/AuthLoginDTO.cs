@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace StoreBackend.Auth.Models
+namespace StoreBackend.Models
 {
     public class AuthLoginDTO
     {

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StoreBackend.DbContexts;
 
 namespace StoreBackend.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
-    partial class StoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210831171553_AddedDiscountIdToBasket")]
+    partial class AddedDiscountIdToBasket
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,17 +28,13 @@ namespace StoreBackend.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("discountId")
+                    b.Property<int>("DiscountId")
                         .HasColumnType("int");
 
-                    b.Property<int>("userId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("discountId");
-
-                    b.HasIndex("userId");
 
                     b.ToTable("Basket");
                 });
@@ -122,25 +120,6 @@ namespace StoreBackend.Migrations
                         .IsUnique();
 
                     b.ToTable("User");
-                });
-
-            modelBuilder.Entity("StoreBackend.Models.Basket", b =>
-                {
-                    b.HasOne("StoreBackend.Models.Discount", "Discount")
-                        .WithMany()
-                        .HasForeignKey("discountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("StoreBackend.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("userId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Discount");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("StoreBackend.Models.BasketProduct", b =>

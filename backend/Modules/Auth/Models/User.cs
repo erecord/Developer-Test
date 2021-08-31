@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
-namespace StoreBackend.Auth.Models
+namespace StoreBackend.Models
 {
     [Index(nameof(Username), IsUnique = true)]
     [Index(nameof(Email), IsUnique = true)]
@@ -27,5 +27,6 @@ namespace StoreBackend.Auth.Models
 
         [JsonIgnore]
         public string PasswordHashed { get; set; }
+
     }
 }

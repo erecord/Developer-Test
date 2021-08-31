@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using StoreBackend.Auth.Interfaces;
-using StoreBackend.Auth.Models;
+using StoreBackend.Models;
 
 namespace StoreBackend.Auth.Services
 {
@@ -21,7 +21,7 @@ namespace StoreBackend.Auth.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]{
-                    new Claim(ClaimTypes.Name, user.Email)
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddDays(30),
                 SigningCredentials = new SigningCredentials(getSymmetricSecurityKey(),
@@ -32,11 +32,9 @@ namespace StoreBackend.Auth.Services
             return tokenHandler.WriteToken(token);
         }
 
-        public static void RegisterService(IServiceCollection servies)
+        public void RegisterAuthenticationService(IServiceCollection services)
         {
-            servies.AddSingleton<IJwtService>(new JwtService());
-
-            servies.AddAuthentication(options =>
+            services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;

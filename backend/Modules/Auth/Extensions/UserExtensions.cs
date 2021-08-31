@@ -1,4 +1,4 @@
-using StoreBackend.Auth.Models;
+using StoreBackend.Models;
 
 namespace StoreBackend.Auth.Extensions
 {
