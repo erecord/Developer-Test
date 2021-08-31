@@ -1,7 +1,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using StoreBackend.Auth.Models;
+using StoreBackend.Models;
 
 namespace StoreBackend.Auth
 {
@@ -12,6 +12,8 @@ namespace StoreBackend.Auth
         }
 
         public DbSet<User> User { get; set; }
+        public DbSet<Basket> Basket { get; set; }
+        public DbSet<Product> Product { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
