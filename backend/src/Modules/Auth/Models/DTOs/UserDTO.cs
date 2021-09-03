@@ -1,7 +1,7 @@
 
-namespace StoreBackend.Models
+namespace StoreBackend.DTOs
 {
-    public class UserStrippedDTO
+    public class UserDTO
     {
         public int Id { get; set; }
         public string Username { get; set; }

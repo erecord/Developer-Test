@@ -1,9 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using StoreBackend.DTOs;
+using StoreBackend.Extensions;
 using StoreBackend.Facade;
 using StoreBackend.Interfaces;
 using StoreBackend.Models;
@@ -30,13 +31,14 @@ namespace StoreBackend.Controllers
 
         // GET: api/Basket
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Basket>>> GetBasket() => Ok(await _basketRepository.GetAllAsync());
+        public async Task<ActionResult<IEnumerable<BasketDTO>>> GetBasket()
+            => Ok((await _basketRepository.GetAllAsync()).Select(b => b.ToDTO()));
 
         // GET: api/Basket/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Basket>> GetBasket(int id)
+        public async Task<ActionResult<BasketDTO>> GetBasket(int id)
         {
-            var basket = await (await _basketRepository.IncludeAsync(b => b.Discount)).FirstAsync(p => p.Id.Equals(id));
+            var basket = (await (await _basketRepository.IncludeAsync(b => b.Discount)).FirstAsync(p => p.Id.Equals(id))).ToDTO();
 
             if (basket == null)
             {

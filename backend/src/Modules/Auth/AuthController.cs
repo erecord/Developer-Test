@@ -54,7 +54,7 @@ namespace StoreBackend.Controllers
                 _context.Add(user);
                 await _context.SaveChangesAsync();
 
-                return Ok(user.ToUserStrippedDTO());
+                return Ok(user.ToDTO());
             }
             catch (DbUpdateException dbUpdateException)
             {
