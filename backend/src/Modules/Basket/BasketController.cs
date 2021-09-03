@@ -50,7 +50,7 @@ namespace StoreBackend.Controllers
 
         // PUT: api/Basket/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [HttpPut("{basketId}")]
         public async Task<IActionResult> PutBasket(int basketId, UpdateBasketDTO updateBasketDTO)
         {
             if (basketId != updateBasketDTO.Basket.Id)
