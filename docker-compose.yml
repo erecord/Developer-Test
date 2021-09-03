@@ -5,7 +5,7 @@ services:
     image: store_backend
     container_name: store_backend
     env_file:
-    - ./backend/dev.env
+      - ./backend/src/dev.env
     volumes:
       - ./backend:/source
       - AspDataProtectionKeys:/root/.aspnet/DataProtection-Keys
