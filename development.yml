@@ -3,7 +3,7 @@ version: "3.4"
 services:
   backend:
     build:
-      context: ./backend
+      context: ./backend/src
       dockerfile: ./Dockerfile.dev
     ports:
       - 5000:5000

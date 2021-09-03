@@ -39,6 +39,10 @@ namespace StoreBackend
             new RegisterDbContexts(services);
             new RegisterAuthModule(services);
             new RegisterBasketModule(services);
+            new RegisterDiscountModule(services);
+            new RegisterProductModule(services);
+            new RegisterBasketProductModule(services);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

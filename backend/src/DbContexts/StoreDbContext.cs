@@ -22,7 +22,6 @@ namespace StoreBackend.DbContexts
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
 
-            builder.Entity<BasketProduct>().HasKey(bp => new { bp.BasketId, bp.ProductId });
         }
     }
 }

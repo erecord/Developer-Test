@@ -11,4 +11,4 @@ COPY *.csproj ./
 RUN dotnet restore
 
 
-ENTRYPOINT [ "dotnet", "watch", "run", "-r", "linux-x64", "--launch-profile", "StoreBackend"]
+ENTRYPOINT [ "dotnet", "watch","--project","./src/StoreBackend.csproj", "run", "-r", "linux-x64", "--launch-profile", "StoreBackend"]

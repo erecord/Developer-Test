@@ -3,17 +3,15 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StoreBackend.DbContexts;
 
 namespace StoreBackend.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
-    [Migration("20210831172126_AddedDiscountIdToBasket2")]
-    partial class AddedDiscountIdToBasket2
+    partial class StoreDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,30 +26,37 @@ namespace StoreBackend.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("DiscountId")
+                    b.Property<int>("discountId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("userId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DiscountId");
+                    b.HasIndex("discountId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("userId");
 
                     b.ToTable("Basket");
                 });
 
             modelBuilder.Entity("StoreBackend.Models.BasketProduct", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
                     b.Property<int>("BasketId")
                         .HasColumnType("int");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.HasKey("BasketId", "ProductId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("BasketId");
 
                     b.HasIndex("ProductId");
 
@@ -130,11 +135,15 @@ namespace StoreBackend.Migrations
                 {
                     b.HasOne("StoreBackend.Models.Discount", "Discount")
                         .WithMany()
-                        .HasForeignKey("DiscountId");
+                        .HasForeignKey("discountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("StoreBackend.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("userId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Discount");
 

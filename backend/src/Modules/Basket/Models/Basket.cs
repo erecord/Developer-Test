@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using StoreBackend.Common;
 
 namespace StoreBackend.Models
 {
-    public class Basket
+    public class Basket : BaseEntity
     {
-        public int Id { get; set; }
         public int userId { get; set; }
         public int discountId { get; set; }
 
