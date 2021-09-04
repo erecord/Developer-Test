@@ -2,10 +2,11 @@ using StoreBackend.Interfaces;
 
 namespace StoreBackend.Facade
 {
-    public class BasketControllerFacade
+
+
+    public class BasketControllerFacade : IBasketControllerFacade
     {
-        public BasketControllerFacade
-        (
+        public BasketControllerFacade(
             IQueryProductsInBasketCommand queryProductsInBasketCommand,
             IQueryProductIdsInBasketCommand queryProductIdsInBasketCommand,
             IRemoveProductsFromBasketCommand removeProductsFromBasketCommand,

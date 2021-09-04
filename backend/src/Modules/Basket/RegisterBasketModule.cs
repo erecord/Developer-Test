@@ -16,7 +16,7 @@ namespace StoreBackend.Modules
             services.AddTransient<IAddProductsToBasketCommand, AddProductsToBasketCommand>();
 
 
-            services.AddTransient<BasketControllerFacade>();
+            services.AddTransient<IBasketControllerFacade, BasketControllerFacade>();
             services.AddScoped<IBasketRepository, BasketRepository>();
         }
     }
