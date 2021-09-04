@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,10 +15,19 @@ namespace StoreBackend.Commands
             _basketProductRepository = basketProductRepository;
         }
 
-        public async Task Execute(IEnumerable<int> removedProductIds)
+        public async Task Execute((int basketId, IEnumerable<int> removedProductIds) parameters)
         {
-            var removedBasketProducts = await _basketProductRepository.WhereAsync(bp => removedProductIds.Contains(bp.ProductId));
-            await _basketProductRepository.DeleteAsync(removedBasketProducts);
+            var productsInBasket = await _basketProductRepository.WhereAsync(bp => bp.BasketId.Equals(parameters.basketId));
+
+            foreach (var productIdToRemove in parameters.removedProductIds)
+            {
+                var basketProduct = productsInBasket.First(bp => bp.ProductId.Equals(productIdToRemove));
+
+                if (basketProduct.Equals(null))
+                    throw new InvalidOperationException($"The product with id {productIdToRemove} does not exist in the basket with id {parameters.basketId}");
+
+                await _basketProductRepository.DeleteAsync(basketProduct);
+            }
         }
     }
 }
