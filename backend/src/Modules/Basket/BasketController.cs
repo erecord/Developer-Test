@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StoreBackend.DTOs;
 using StoreBackend.Extensions;
-using StoreBackend.Facade;
 using StoreBackend.Interfaces;
 using StoreBackend.Models;
 
@@ -16,16 +15,13 @@ namespace StoreBackend.Controllers
     public class BasketController : ControllerBase
     {
         private readonly IBasketRepository _basketRepository;
-        private readonly IBasketProductRepository _basketProductRepository;
-        private readonly BasketControllerFacade _controllerFacade;
+        private readonly IBasketControllerFacade _controllerFacade;
 
         public BasketController(
-            IBasketRepository repository, IBasketProductRepository basketProductRepository,
-            BasketControllerFacade basketControllerFacade
+            IBasketRepository repository, IBasketControllerFacade basketControllerFacade
         )
         {
             _basketRepository = repository;
-            _basketProductRepository = basketProductRepository;
             _controllerFacade = basketControllerFacade;
         }
 
@@ -66,7 +62,7 @@ namespace StoreBackend.Controllers
             var newProductIds = updateBasketDTO.ProductIds.Except(productIdsInBasket);
 
             await _controllerFacade.AddProductsToBasketCommand.Execute((basketId, newProductIds));
-            await _controllerFacade.RemoveProductsFromBasketCommand.Execute(removedProductIds);
+            await _controllerFacade.RemoveProductsFromBasketCommand.Execute((basketId, removedProductIds));
 
             var entityFound = await _basketRepository.UpdateAsync(updateBasketDTO.Basket);
 
