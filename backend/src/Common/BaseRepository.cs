@@ -31,24 +31,29 @@ namespace StoreBackend.Common
         public async Task<bool> UpdateAsync(T entity)
         {
             bool entityFound = false;
-            _context.Entry(entity).State = EntityState.Modified;
 
             try
             {
+                var entry = _entity.First(e => e.Id == entity.Id);
+                _context.Entry(entry).CurrentValues.SetValues(entity);
                 await _context.SaveChangesAsync();
                 entityFound = true;
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception exception)
             {
-                if (!EntityExists(entity.Id))
+                if (exception is DbUpdateConcurrencyException || exception is InvalidOperationException)
                 {
-                    entityFound = false;
+                    if (!EntityExists(entity.Id))
+                    {
+                        entityFound = false;
+                    }
                 }
                 else
                 {
                     throw;
                 }
             }
+
 
             return entityFound;
         }
