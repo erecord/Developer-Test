@@ -19,11 +19,14 @@ namespace StoreBackend.Commands
         {
             var productsInBasket = await _basketProductRepository.WhereAsync(bp => bp.BasketId.Equals(parameters.basketId));
 
+            if (productsInBasket.Count().Equals(0))
+                throw new InvalidOperationException($"The basket with id {parameters.basketId} either does not exist or has no products to remove");
+
             foreach (var productIdToRemove in parameters.removedProductIds)
             {
-                var basketProduct = productsInBasket.First(bp => bp.ProductId.Equals(productIdToRemove));
+                var basketProduct = productsInBasket.FirstOrDefault(bp => bp.ProductId.Equals(productIdToRemove));
 
-                if (basketProduct.Equals(null))
+                if (basketProduct == null)
                     throw new InvalidOperationException($"The product with id {productIdToRemove} does not exist in the basket with id {parameters.basketId}");
 
                 await _basketProductRepository.DeleteAsync(basketProduct);
