@@ -34,7 +34,7 @@ namespace StoreBackend.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<BasketDTO>> GetBasket(int id)
         {
-            var basket = (await (await _basketRepository.IncludeAsync(b => b.Discount)).FirstAsync(p => p.Id.Equals(id))).ToDTO();
+            var basket = await _basketRepository.ToPopulatedBasket(id);
 
             if (basket == null)
             {
@@ -43,7 +43,7 @@ namespace StoreBackend.Controllers
 
             basket.Products = (await _controllerFacade.QueryProductsInBasketCommand.Execute(id)).ToList();
 
-            return basket;
+            return basket.ToDTO();
         }
 
         // PUT: api/Basket/5
