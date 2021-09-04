@@ -5,6 +5,7 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using StoreBackend.Commands;
 using StoreBackend.DbContexts;
+using StoreBackend.Extensions;
 using StoreBackend.Interfaces;
 using StoreBackend.Models;
 using StoreBackend.Repositories;
@@ -15,20 +16,19 @@ namespace StoreBackend.Tests
     public class RemoveProductFromBasketCommandTests : BaseTest
     {
         private BasketProductRepository _basketProductRepository;
-        private IRemoveProductsFromBasketCommand _removeProductsFromBasketCommand;
+        private IRemoveProductsFromBasketCommand _SUT;
         private const int BasketId = 1;
         private const int SecondBasketId = 2;
 
         [Fact]
-        public async void RemoveProductsFromBasketCommand_WhenSingleProductIsRemoved_BasketDoesNotContainTheSingleProduct()
+        public async void Execute_WhenSingleProductIsRemoved_BasketDoesNotContainTheSingleProduct()
         {
             using (var context = InitAndGetDbContext())
             {
                 var productIdToRemove = 2;
-                await _removeProductsFromBasketCommand.Execute((BasketId, new[] { productIdToRemove }));
+                await _SUT.Execute((BasketId, new[] { productIdToRemove }));
 
-                var basketProductsList = await (await _basketProductRepository.WhereAsync(bp => bp.BasketId.Equals(BasketId))).ToListAsync();
-                var productIdsInBasket = basketProductsList.Select(bp => bp.ProductId);
+                var productIdsInBasket = await _basketProductRepository.QueryProductIdsInBasketAsync(BasketId);
 
                 productIdsInBasket.Should().Contain(new[] { 1, 3 });
                 productIdsInBasket.Should().NotContain(2);
@@ -36,15 +36,14 @@ namespace StoreBackend.Tests
         }
 
         [Fact]
-        public async void RemoveProductsFromBasketCommand_WhenMultipleProductsAreRemoved_BasketDoesNotContainTheRemovedProducts()
+        public async void Execute_WhenMultipleProductsAreRemoved_BasketDoesNotContainTheRemovedProducts()
         {
             using (var context = InitAndGetDbContext())
             {
                 var productsToRemove = new[] { 2, 3 };
-                await _removeProductsFromBasketCommand.Execute((BasketId, productsToRemove));
+                await _SUT.Execute((BasketId, productsToRemove));
 
-                var basketProductsList = await (await _basketProductRepository.WhereAsync(bp => bp.BasketId.Equals(BasketId))).ToListAsync();
-                var productIdsInBasket = basketProductsList.Select(bp => bp.ProductId);
+                var productIdsInBasket = await _basketProductRepository.QueryProductIdsInBasketAsync(BasketId);
 
                 productIdsInBasket.Should().Contain(1);
                 productIdsInBasket.Should().NotContain(productsToRemove);
@@ -52,18 +51,15 @@ namespace StoreBackend.Tests
         }
 
         [Fact]
-        public async void RemoveProductsFromBasketCommand_WhenProductIsRemoved_ProductIsRemovedFromOnlyTheCorrectBasket()
+        public async void Execute_WhenProductIsRemoved_ProductIsRemovedFromOnlyTheCorrectBasket()
         {
             using (var context = InitAndGetDbContext())
             {
                 var productIdToRemove = new[] { 1 };
-                await _removeProductsFromBasketCommand.Execute((BasketId, productIdToRemove));
+                await _SUT.Execute((BasketId, productIdToRemove));
 
-                var basketProductsList = await (await _basketProductRepository.WhereAsync(bp => bp.BasketId.Equals(BasketId))).ToListAsync();
-                var productIdsInBasket = basketProductsList.Select(bp => bp.ProductId);
-
-                var secondBasketProductsList = await (await _basketProductRepository.WhereAsync(bp => bp.BasketId.Equals(SecondBasketId))).ToListAsync();
-                var productIdsInSecondBasket = secondBasketProductsList.Select(bp => bp.ProductId);
+                var productIdsInBasket = await _basketProductRepository.QueryProductIdsInBasketAsync(BasketId);
+                var productIdsInSecondBasket = await _basketProductRepository.QueryProductIdsInBasketAsync(SecondBasketId);
 
                 productIdsInBasket.Should().Contain(new[] { 2, 3 });
                 productIdsInBasket.Should().NotContain(productIdToRemove);
@@ -73,24 +69,24 @@ namespace StoreBackend.Tests
         }
 
         [Fact]
-        public async void RemoveProductsFromBasketCommand_WhenProductIdIsNotInBasket_ThrowsInvalidOperationException()
+        public async void Execute_WhenProductIdIsNotInBasket_ThrowsInvalidOperationException()
         {
             using (var context = InitAndGetDbContext())
             {
                 var productIdToRemove = new[] { 4 };
-                Func<Task> act = () => _removeProductsFromBasketCommand.Execute((BasketId, productIdToRemove));
+                Func<Task> act = () => _SUT.Execute((BasketId, productIdToRemove));
 
                 await act.Should().ThrowAsync<InvalidOperationException>();
             }
         }
 
         [Fact]
-        public async void RemoveProductsFromBasketCommand_WhenBasketIdDoesNotExist_ThrowsInvalidOperationException()
+        public async void Execute_WhenBasketIdDoesNotExist_ThrowsInvalidOperationException()
         {
             using (var context = InitAndGetDbContext())
             {
                 var nonexistingBasketId = -1;
-                Func<Task> act = () => _removeProductsFromBasketCommand.Execute((nonexistingBasketId, new[] { 1 }));
+                Func<Task> act = () => _SUT.Execute((nonexistingBasketId, new[] { 1 }));
 
                 await act.Should().ThrowAsync<InvalidOperationException>();
             }
@@ -184,7 +180,7 @@ namespace StoreBackend.Tests
             context.SaveChanges();
 
             _basketProductRepository = new BasketProductRepository(context);
-            _removeProductsFromBasketCommand = new RemoveProductsFromBasketCommand(_basketProductRepository);
+            _SUT = new RemoveProductsFromBasketCommand(_basketProductRepository);
             return context;
         }
     }

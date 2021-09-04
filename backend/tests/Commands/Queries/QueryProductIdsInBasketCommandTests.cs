@@ -18,7 +18,7 @@ namespace StoreBackend.Tests
         private const int SecondBasketId = 2;
 
         [Fact]
-        public async void QueryProductIdsInBasketCommand_WhenProductsAreInBasket_ReturnsTheProductIdsOfAllProductsInBasket()
+        public async void Execute_WhenProductsAreInBasket_ReturnsTheProductIdsOfAllProductsInBasket()
         {
             using (var context = InitAndGetDbContext())
             {
@@ -30,7 +30,7 @@ namespace StoreBackend.Tests
         }
 
         [Fact]
-        public async void QueryProductIdsInBasketCommand_WhenBasketIdDoesNotExist_ThrowsInvalidOperationException()
+        public async void Execute_WhenBasketIdDoesNotExist_ThrowsInvalidOperationException()
         {
             using (var context = InitAndGetDbContext())
             {
@@ -42,7 +42,7 @@ namespace StoreBackend.Tests
         }
 
         [Fact]
-        public async void QueryProductIdsInBasketCommand_WhenBasketIsEmpty_ReturnsEmptyQueryable()
+        public async void Execute_WhenBasketIsEmpty_ReturnsEmptyQueryable()
         {
             using (var context = InitAndGetDbContext())
             {

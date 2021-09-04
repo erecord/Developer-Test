@@ -1,10 +1,9 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using StoreBackend.Commands;
 using StoreBackend.DbContexts;
+using StoreBackend.Extensions;
 using StoreBackend.Factories;
 using StoreBackend.Interfaces;
 using StoreBackend.Models;
@@ -15,29 +14,22 @@ namespace StoreBackend.Tests
 {
     public class AddProductToBasketCommandTests : BaseTest
     {
-        private IBasketProductFactory _basketProductFactory;
+        private IBasketProductFactory _basketProductFactory = new BasketProductFactory();
         private IBasketProductRepository _basketProductRepository;
         private IBasketRepository _basketRepository;
         private IProductRepository _productRepository;
-        private IAddProductsToBasketCommand _addProductsToBasketCommand;
+        private IAddProductsToBasketCommand _SUT;
         private const int BasketId = 1;
 
-        public AddProductToBasketCommandTests()
-        {
-            _basketProductFactory = new BasketProductFactory();
-        }
-
-
         [Fact]
-        public async void AddProductsToBasketCommand_WhenSingleProductIsAdded_BasketContainsTheSingleProduct()
+        public async void Execute_WhenSingleProductIsAdded_BasketContainsTheSingleProduct()
         {
             using (var context = InitAndGetDbContext())
             {
                 var productIdToAdd = 1;
-                await _addProductsToBasketCommand.Execute((BasketId, new[] { productIdToAdd }));
+                await _SUT.Execute((BasketId, new[] { productIdToAdd }));
 
-                var basketProductsList = await (await _basketProductRepository.WhereAsync(bp => bp.BasketId.Equals(BasketId))).ToListAsync();
-                var productIdsInBasket = basketProductsList.Select(bp => bp.ProductId);
+                var productIdsInBasket = await _basketProductRepository.QueryProductIdsInBasketAsync(BasketId); ;
 
                 productIdsInBasket.Should().HaveCount(1);
                 productIdsInBasket.Should().Contain(productIdToAdd);
@@ -45,39 +37,38 @@ namespace StoreBackend.Tests
         }
 
         [Fact]
-        public async void AddProductsToBasketCommand_WhenMultipleProductsAreAdded_BasketContainsTheMultipleProducts()
+        public async void Execute_WhenMultipleProductsAreAdded_BasketContainsTheMultipleProducts()
         {
             using (var context = InitAndGetDbContext())
             {
                 var productsToAdd = new[] { 1, 2, 3 };
-                await _addProductsToBasketCommand.Execute((BasketId, productsToAdd));
+                await _SUT.Execute((BasketId, productsToAdd));
 
-                var basketProductsList = await (await _basketProductRepository.WhereAsync(bp => bp.BasketId.Equals(BasketId))).ToListAsync();
-                var productIdsInBasket = basketProductsList.Select(bp => bp.ProductId);
+                var productIdsInBasket = await _basketProductRepository.QueryProductIdsInBasketAsync(BasketId);
 
                 productIdsInBasket.Should().BeEquivalentTo(productsToAdd);
             }
         }
 
         [Fact]
-        public async Task AddProductsToBasketCommand_WhenProductDoesNotExist_ThrowsInvalidOperationException()
+        public async Task Execute_WhenProductDoesNotExist_ThrowsInvalidOperationException()
         {
             using (var context = InitAndGetDbContext())
             {
                 var nonexistentProductId = -1;
-                Func<Task> act = () => _addProductsToBasketCommand.Execute((BasketId, new[] { nonexistentProductId }));
+                Func<Task> act = () => _SUT.Execute((BasketId, new[] { nonexistentProductId }));
 
                 await act.Should().ThrowAsync<InvalidOperationException>();
             }
         }
 
         [Fact]
-        public async Task AddProductsToBasketCommand_WhenBasketDoesNotExist_ThrowsInvalidOperationException()
+        public async Task Execute_WhenBasketDoesNotExist_ThrowsInvalidOperationException()
         {
             using (var context = InitAndGetDbContext())
             {
                 var nonexistentBasketId = -1;
-                Func<Task> act = () => _addProductsToBasketCommand.Execute((nonexistentBasketId, new[] { 1 }));
+                Func<Task> act = () => _SUT.Execute((nonexistentBasketId, new[] { 1 }));
 
                 await act.Should().ThrowAsync<InvalidOperationException>();
             }
@@ -131,7 +122,7 @@ namespace StoreBackend.Tests
             _basketProductRepository = new BasketProductRepository(context);
             _basketRepository = new BasketRepository(context);
             _productRepository = new ProductRepository(context);
-            _addProductsToBasketCommand = new AddProductsToBasketCommand(_basketProductRepository, _basketRepository, _productRepository, _basketProductFactory);
+            _SUT = new AddProductsToBasketCommand(_basketProductRepository, _basketRepository, _productRepository, _basketProductFactory);
             return context;
         }
     }

@@ -13,7 +13,7 @@ namespace StoreBackend.Tests
     public class QueryTotalCostOfBasketCommandTests : BaseTest
     {
 
-        private IQueryTotalCostOfBasketCommand _queryTotalCostOfBasketCommand;
+        private IQueryTotalCostOfBasketCommand _SUT;
 
         private const int BasketId = 1;
         private const int SecondBasketId = 2;
@@ -24,11 +24,11 @@ namespace StoreBackend.Tests
 
 
         [Fact]
-        public async void QueryTotalCostOfBasketCommand_WhenProductsAreInBasket_BasketTotalEqualsCostOfAllProductsInBasket()
+        public async void Execute_WhenProductsAreInBasket_BasketTotalEqualsCostOfAllProductsInBasket()
         {
             using (var context = InitAndGetDbContext())
             {
-                var totalCostOfBasket = await _queryTotalCostOfBasketCommand.Execute(BasketId);
+                var totalCostOfBasket = await _SUT.Execute(BasketId);
 
                 var expectedTotalCostOfBasket = product1Cost + product2Cost + product3Cost;
                 totalCostOfBasket.Should().Be(expectedTotalCostOfBasket);
@@ -36,11 +36,11 @@ namespace StoreBackend.Tests
         }
 
         [Fact]
-        public async void QueryTotalCostOfBasketCommand_WhenNoProductsAreInBasket_BasketTotalEqualsZero()
+        public async void Execute_WhenNoProductsAreInBasket_BasketTotalEqualsZero()
         {
             using (var context = InitAndGetDbContext())
             {
-                var totalCostOfBasket = await _queryTotalCostOfBasketCommand.Execute(SecondBasketId);
+                var totalCostOfBasket = await _SUT.Execute(SecondBasketId);
 
                 var expectedTotalCostOfBasket = 0;
                 totalCostOfBasket.Should().Be(expectedTotalCostOfBasket);
@@ -48,12 +48,12 @@ namespace StoreBackend.Tests
         }
 
         [Fact]
-        public async void QueryTotalCostOfBasketCommand_WhenBasketIdDoesNotExist_ThrowsInvalidOperationException()
+        public async void Execute_WhenBasketIdDoesNotExist_ThrowsInvalidOperationException()
         {
             using (var context = InitAndGetDbContext())
             {
                 var nonexistingBasketId = -1;
-                Func<Task> act = () => _queryTotalCostOfBasketCommand.Execute(nonexistingBasketId);
+                Func<Task> act = () => _SUT.Execute(nonexistingBasketId);
 
                 await act.Should().ThrowAsync<InvalidOperationException>();
             }
@@ -143,7 +143,7 @@ namespace StoreBackend.Tests
             var basketRepository = new BasketRepository(context);
             var queryProductIdsInBasketCommand = new QueryProductIdsInBasketCommand(basketProductRepository, basketRepository);
             var queryProductsInBasketCommand = new QueryProductsInBasketCommand(productRepository, queryProductIdsInBasketCommand);
-            _queryTotalCostOfBasketCommand = new QueryTotalCostOfBasketCommand(queryProductsInBasketCommand, productRepository);
+            _SUT = new QueryTotalCostOfBasketCommand(queryProductsInBasketCommand, productRepository);
             return context;
         }
     }
