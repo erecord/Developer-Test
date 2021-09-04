@@ -8,6 +8,7 @@ namespace StoreBackend.Extensions
         public static BasketDTO ToDTO(this Basket basket) =>
         new BasketDTO
         {
+            Id = basket.Id,
             userId = basket.userId,
             discountId = basket.discountId,
             User = basket.User,
