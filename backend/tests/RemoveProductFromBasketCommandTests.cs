@@ -84,6 +84,18 @@ namespace StoreBackend.Tests
             }
         }
 
+        [Fact]
+        public async void RemoveProductsFromBasketCommand_WhenBasketIdDoesNotExist_ThrowsInvalidOperationException()
+        {
+            using (var context = InitAndGetDbContext())
+            {
+                var nonexistingBasketId = -1;
+                Func<Task> act = () => _removeProductsFromBasketCommand.Execute((nonexistingBasketId, new[] { 1 }));
+
+                await act.Should().ThrowAsync<InvalidOperationException>();
+            }
+        }
+
         private StoreDbContext InitAndGetDbContext()
         {
             var context = GetDbContext();
