@@ -7,7 +7,7 @@ namespace StoreBackend.Extensions
 {
     public static class BasketRepositoryExtensions
     {
-        public async static Task<Basket> ToPopulatedBasket(this IBasketRepository repository, int basketId)
+        public async static Task<Basket> ToPopulatedBasketAsync(this IBasketRepository repository, int basketId)
          => await (await repository.IncludeAsync(b => b.Discount)).FirstOrDefaultAsync(p => p.Id.Equals(basketId));
     }
 }

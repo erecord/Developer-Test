@@ -34,7 +34,7 @@ namespace StoreBackend.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<BasketDTO>> GetBasket(int id)
         {
-            var basket = await _basketRepository.ToPopulatedBasket(id);
+            var basket = await _basketRepository.ToPopulatedBasketAsync(id);
 
             if (basket == null)
             {
