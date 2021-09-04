@@ -3,7 +3,7 @@ using StoreBackend.Common.Interfaces;
 
 namespace StoreBackend.Interfaces
 {
-    public interface IQueryProductIdsInBasketCommand : ICommandWithReturnAndParam<IQueryable<int>, int>
+    public interface IQueryProductIdsInBasketCommand : ICommandWithReturnAndParamAsync<IQueryable<int>, int>
     {
     }
 }

@@ -2,22 +2,27 @@ using System.Threading.Tasks;
 
 namespace StoreBackend.Common.Interfaces
 {
-    public interface ICommand
+    public interface ICommandAsync
     {
         Task Execute();
     }
 
-    public interface ICommandWithReturn<TReturn>
+    public interface ICommandWithReturnAsync<TReturn>
     {
         Task<TReturn> Execute();
     }
 
-    public interface ICommandWithParam<TParameter>
+    public interface ICommandWithParamAsync<TParameter>
     {
         Task Execute(TParameter parameter);
     }
 
     public interface ICommandWithReturnAndParam<TReturn, TParameter>
+    {
+        TReturn Execute(TParameter parameter);
+    }
+
+    public interface ICommandWithReturnAndParamAsync<TReturn, TParameter>
     {
         Task<TReturn> Execute(TParameter parameter);
     }
