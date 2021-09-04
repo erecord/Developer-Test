@@ -1,10 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using StoreBackend.Facade;
+using StoreBackend.DTOs;
+using StoreBackend.Extensions;
 using StoreBackend.Interfaces;
 using StoreBackend.Models;
 
@@ -15,28 +15,26 @@ namespace StoreBackend.Controllers
     public class BasketController : ControllerBase
     {
         private readonly IBasketRepository _basketRepository;
-        private readonly IBasketProductRepository _basketProductRepository;
-        private readonly BasketControllerFacade _controllerFacade;
+        private readonly IBasketControllerFacade _controllerFacade;
 
         public BasketController(
-            IBasketRepository repository, IBasketProductRepository basketProductRepository,
-            BasketControllerFacade basketControllerFacade
+            IBasketRepository repository, IBasketControllerFacade basketControllerFacade
         )
         {
             _basketRepository = repository;
-            _basketProductRepository = basketProductRepository;
             _controllerFacade = basketControllerFacade;
         }
 
         // GET: api/Basket
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Basket>>> GetBasket() => Ok(await _basketRepository.GetAllAsync());
+        public async Task<ActionResult<IEnumerable<BasketDTO>>> GetBasket()
+            => Ok((await _basketRepository.GetAllAsync()).Select(b => b.ToDTO()));
 
         // GET: api/Basket/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Basket>> GetBasket(int id)
+        public async Task<ActionResult<BasketDTO>> GetBasket(int id)
         {
-            var basket = await (await _basketRepository.IncludeAsync(b => b.Discount)).FirstAsync(p => p.Id.Equals(id));
+            var basket = (await (await _basketRepository.IncludeAsync(b => b.Discount)).FirstAsync(p => p.Id.Equals(id))).ToDTO();
 
             if (basket == null)
             {
@@ -50,7 +48,7 @@ namespace StoreBackend.Controllers
 
         // PUT: api/Basket/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [HttpPut("{basketId}")]
         public async Task<IActionResult> PutBasket(int basketId, UpdateBasketDTO updateBasketDTO)
         {
             if (basketId != updateBasketDTO.Basket.Id)
@@ -64,7 +62,7 @@ namespace StoreBackend.Controllers
             var newProductIds = updateBasketDTO.ProductIds.Except(productIdsInBasket);
 
             await _controllerFacade.AddProductsToBasketCommand.Execute((basketId, newProductIds));
-            await _controllerFacade.RemoveProductsFromBasketCommand.Execute(removedProductIds);
+            await _controllerFacade.RemoveProductsFromBasketCommand.Execute((basketId, removedProductIds));
 
             var entityFound = await _basketRepository.UpdateAsync(updateBasketDTO.Basket);
 

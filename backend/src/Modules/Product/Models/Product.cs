@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using StoreBackend.Common;
 
 namespace StoreBackend.Models
@@ -6,7 +7,9 @@ namespace StoreBackend.Models
     {
 
         public string Name { get; set; }
-        public float Price { get; set; }
+
+        [Column(TypeName = "decimal(16,3)")]
+        public decimal Price { get; set; }
 
     }
 }

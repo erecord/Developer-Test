@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using StoreBackend.Auth.Extensions;
 using StoreBackend.Auth.Interfaces;
 using StoreBackend.DbContexts;
+using StoreBackend.DTOs;
 using StoreBackend.Models;
 using BC = BCrypt.Net.BCrypt;
 
@@ -54,7 +55,7 @@ namespace StoreBackend.Controllers
                 _context.Add(user);
                 await _context.SaveChangesAsync();
 
-                return Ok(user.ToUserStrippedDTO());
+                return Ok(user.ToDTO());
             }
             catch (DbUpdateException dbUpdateException)
             {
