@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using StoreBackend.Auth.Extensions;
 using StoreBackend.Auth.Interfaces;
 using StoreBackend.DbContexts;
+using StoreBackend.DTOs;
 using StoreBackend.Models;
 using BC = BCrypt.Net.BCrypt;
 

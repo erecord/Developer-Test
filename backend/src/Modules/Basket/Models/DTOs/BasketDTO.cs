@@ -6,6 +6,7 @@ namespace StoreBackend.DTOs
     public record BasketDTO
     {
 
+        public int Id { get; init; }
         public int userId { get; init; }
         public int discountId { get; init; }
 
