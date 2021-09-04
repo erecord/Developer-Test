@@ -54,7 +54,6 @@ namespace StoreBackend.Common
                 }
             }
 
-
             return entityFound;
         }
         public async Task DeleteAsync(T entity)
