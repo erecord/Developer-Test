@@ -12,6 +12,7 @@ namespace StoreBackend.Modules
         {
             services.AddTransient<IQueryProductsInBasketCommand, QueryProductsInBasketCommand>();
             services.AddTransient<IQueryProductIdsInBasketCommand, QueryProductIdsInBasketCommand>();
+            services.AddTransient<IQueryTotalCostOfBasketCommand, QueryTotalCostOfBasketCommand>();
             services.AddTransient<IRemoveProductsFromBasketCommand, RemoveProductsFromBasketCommand>();
             services.AddTransient<IAddProductsToBasketCommand, AddProductsToBasketCommand>();
 
