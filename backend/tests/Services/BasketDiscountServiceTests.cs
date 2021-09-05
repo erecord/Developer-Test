@@ -24,7 +24,6 @@ namespace StoreBackend.Tests
         public const decimal Discount2Percentage = 10;
 
         public const decimal Product1Price = 7.99M;
-        public const decimal Product2Price = 300M;
         private IBasketDiscountService _SUT;
         private ICalculateDiscountedPriceCommand _calculateDiscountedPriceCommand = new CalculateDiscountedPriceCommand();
 
@@ -108,7 +107,7 @@ namespace StoreBackend.Tests
             var user2 = TestUserFactory.CreateRandomUser(2);
 
             var products = new[] {
-                TestProductFactory.CreateProduct(1, 7.99M),
+                TestProductFactory.CreateProduct(1, Product1Price),
                 TestProductFactory.CreateProduct(2, 300M),
             };
 

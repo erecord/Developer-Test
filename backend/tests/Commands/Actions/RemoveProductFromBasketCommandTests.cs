@@ -1,13 +1,10 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using StoreBackend.Commands;
 using StoreBackend.DbContexts;
 using StoreBackend.Extensions;
 using StoreBackend.Interfaces;
-using StoreBackend.Models;
 using StoreBackend.Repositories;
 using StoreBackend.Tests.Factories;
 using Xunit;
