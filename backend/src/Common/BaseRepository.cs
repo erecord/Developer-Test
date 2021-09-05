@@ -28,14 +28,15 @@ namespace StoreBackend.Common
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> UpdateAsync(T entity)
+        public virtual async Task<bool> UpdateAsync(T entity)
         {
             bool entityFound = false;
 
             try
             {
-                var entry = _entity.First(e => e.Id == entity.Id);
-                _context.Entry(entry).CurrentValues.SetValues(entity);
+                var entryFromDb = _entity.First(e => e.Id == entity.Id);
+                entity = ModifyNewEntityBeforeUpdate(entryFromDb, entity);
+                _context.Entry(entryFromDb).CurrentValues.SetValues(entity);
                 await _context.SaveChangesAsync();
                 entityFound = true;
             }
@@ -56,6 +57,9 @@ namespace StoreBackend.Common
 
             return entityFound;
         }
+
+        public virtual T ModifyNewEntityBeforeUpdate(T entityFromDb, T newEntity) => newEntity;
+
         public async Task DeleteAsync(T entity)
         {
             _entity.Remove(entity);
