@@ -8,7 +8,7 @@ namespace StoreBackend.DTOs
 
         public int Id { get; init; }
         public int userId { get; init; }
-        public int discountId { get; init; }
+        public int? discountId { get; init; }
 
         public List<Product> Products { get; set; }
 

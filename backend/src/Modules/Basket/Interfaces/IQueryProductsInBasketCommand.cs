@@ -4,7 +4,7 @@ using StoreBackend.Models;
 
 namespace StoreBackend.Interfaces
 {
-    public interface IQueryProductsInBasketCommand : ICommandWithReturnAndParam<IQueryable<Product>, int>
+    public interface IQueryProductsInBasketCommand : ICommandWithReturnAndParamAsync<IQueryable<Product>, int>
     {
     }
 }

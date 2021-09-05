@@ -7,15 +7,12 @@ namespace StoreBackend.Commands
     public class QueryTotalCostOfBasketCommand : IQueryTotalCostOfBasketCommand
     {
         private readonly IQueryProductsInBasketCommand _queryProductsInBasketCommand;
-        private readonly IProductRepository _productRepository;
 
         public QueryTotalCostOfBasketCommand(
-            IQueryProductsInBasketCommand queryProductsInBasketCommand,
-            IProductRepository productRepository
+            IQueryProductsInBasketCommand queryProductsInBasketCommand
             )
         {
             _queryProductsInBasketCommand = queryProductsInBasketCommand;
-            _productRepository = productRepository;
         }
         public async Task<decimal> Execute(int basketId)
         {

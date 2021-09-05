@@ -3,7 +3,7 @@ using StoreBackend.Common.Interfaces;
 
 namespace StoreBackend.Interfaces
 {
-    public interface IAddProductsToBasketCommand : ICommandWithParam<(int basketId, IEnumerable<int> newProductIds)>
+    public interface IAddProductsToBasketCommand : ICommandWithParamAsync<(int basketId, IEnumerable<int> newProductIds)>
     {
     }
 }

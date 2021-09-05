@@ -7,7 +7,7 @@ namespace StoreBackend.Models
     public class Basket : BaseEntity
     {
         public int userId { get; set; }
-        public int discountId { get; set; }
+        public int? discountId { get; set; }
 
         [NotMapped]
         public List<Product> Products { get; set; }
