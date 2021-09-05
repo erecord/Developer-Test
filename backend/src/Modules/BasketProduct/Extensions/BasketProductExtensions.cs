@@ -12,6 +12,6 @@ namespace StoreBackend.Extensions
             => await repository.WhereAsync(bp => bp.BasketId.Equals(basketId));
 
         public static async Task<IQueryable<int>> QueryProductIdsInBasketAsync(this IBasketProductRepository repository, int basketId)
-            => (await QueryByBasketIdAsync(repository, basketId)).Select(p => p.Id);
+            => (await QueryByBasketIdAsync(repository, basketId)).Select(p => p.ProductId);
     }
 }
