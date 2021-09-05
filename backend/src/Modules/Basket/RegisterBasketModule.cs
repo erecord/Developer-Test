@@ -3,6 +3,7 @@ using StoreBackend.Commands;
 using StoreBackend.Facade;
 using StoreBackend.Interfaces;
 using StoreBackend.Repositories;
+using StoreBackend.Services;
 
 namespace StoreBackend.Modules
 {
@@ -16,9 +17,9 @@ namespace StoreBackend.Modules
             services.AddTransient<IRemoveProductsFromBasketCommand, RemoveProductsFromBasketCommand>();
             services.AddTransient<IAddProductsToBasketCommand, AddProductsToBasketCommand>();
 
-
             services.AddTransient<IBasketControllerFacade, BasketControllerFacade>();
             services.AddScoped<IBasketRepository, BasketRepository>();
+            services.AddScoped<IBasketDiscountService, BasketDiscountService>();
         }
     }
 }
