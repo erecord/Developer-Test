@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -108,13 +109,13 @@ namespace StoreBackend.Controllers
             {
                 await _controllerFacade.BasketDiscountService.SetDiscountOnBasketAsync(id, discountCode);
             }
-            catch (BasketNotFoundException)
+            catch (BasketNotFoundException ex)
             {
-                return NotFound($"The basket with id {id} does not exist");
+                return NotFound(ex.Message);
             }
-            catch (DiscountCodeNotFoundException)
+            catch (DiscountCodeNotFoundException ex)
             {
-                return NotFound($"{discountCode} is not a valid discount code");
+                return NotFound(ex.Message);
             }
 
             return NoContent();
@@ -129,9 +130,30 @@ namespace StoreBackend.Controllers
                 var basketTotalCost = await _controllerFacade.QueryTotalCostOfBasketCommand.Execute(id);
                 return Ok(basketTotalCost);
             }
-            catch (BasketNotFoundException)
+            catch (BasketNotFoundException ex)
             {
-                return NotFound($"The basket with id {id} does not exist");
+                return NotFound(ex.Message);
+            }
+        }
+
+        // GET: api/Basket/5/TotalCostAfterDiscount
+        [HttpGet("{id}/TotalCostAfterDiscount")]
+        public async Task<IActionResult> GetBasketTotalCostAfterDiscount(int id)
+        {
+            try
+            {
+                var totalBasketCostAfterDiscount =
+                    await _controllerFacade.BasketDiscountService.QueryBasketTotalCostAfterDiscountAsync(id);
+
+                return Ok(totalBasketCostAfterDiscount);
+            }
+            catch (BasketNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Problem(ex.Message);
             }
         }
     }
