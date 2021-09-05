@@ -88,7 +88,7 @@ namespace StoreBackend.Tests
             var basketRepository = new BasketRepository(context);
             var queryProductIdsInBasketCommand = new QueryProductIdsInBasketCommand(basketProductRepository, basketRepository);
             var queryProductsInBasketCommand = new QueryProductsInBasketCommand(productRepository, queryProductIdsInBasketCommand);
-            _SUT = new QueryTotalCostOfBasketCommand(queryProductsInBasketCommand, productRepository);
+            _SUT = new QueryTotalCostOfBasketCommand(queryProductsInBasketCommand);
             return context;
         }
     }

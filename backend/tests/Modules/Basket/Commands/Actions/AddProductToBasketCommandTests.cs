@@ -4,7 +4,6 @@ using FluentAssertions;
 using StoreBackend.Commands;
 using StoreBackend.DbContexts;
 using StoreBackend.Extensions;
-using StoreBackend.Factories;
 using StoreBackend.Interfaces;
 using StoreBackend.Repositories;
 using StoreBackend.Tests.Factories;
@@ -14,7 +13,6 @@ namespace StoreBackend.Tests
 {
     public class AddProductToBasketCommandTests : BaseTest
     {
-        private IBasketProductFactory _basketProductFactory = new BasketProductFactory();
         private IBasketProductRepository _basketProductRepository;
         private IBasketRepository _basketRepository;
         private IProductRepository _productRepository;
@@ -97,7 +95,7 @@ namespace StoreBackend.Tests
             _basketProductRepository = new BasketProductRepository(context);
             _basketRepository = new BasketRepository(context);
             _productRepository = new ProductRepository(context);
-            _SUT = new AddProductsToBasketCommand(_basketProductRepository, _basketRepository, _productRepository, _basketProductFactory);
+            _SUT = new AddProductsToBasketCommand(_basketProductRepository, _basketRepository, _productRepository);
             return context;
         }
     }

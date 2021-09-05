@@ -135,7 +135,7 @@ namespace StoreBackend.Tests
 
             var queryProductIdsInBasketCommand = new QueryProductIdsInBasketCommand(basketProductRepository, basketRepository);
             var queryProductsInBasketCommand = new QueryProductsInBasketCommand(productRepository, queryProductIdsInBasketCommand);
-            var queryTotalCostOfBasketCommand = new QueryTotalCostOfBasketCommand(queryProductsInBasketCommand, productRepository);
+            var queryTotalCostOfBasketCommand = new QueryTotalCostOfBasketCommand(queryProductsInBasketCommand);
             _SUT = new BasketDiscountService(basketRepository, discountRepository, queryTotalCostOfBasketCommand, _calculateDiscountedPriceCommand);
 
             return context;
