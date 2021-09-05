@@ -30,7 +30,7 @@ namespace StoreBackend.Controllers
         // GET: api/Basket
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BasketDTO>>> GetBasket()
-            => Ok((await _basketRepository.GetAllAsync()).Select(b => b.ToDTO()));
+            => (await _basketRepository.GetAllAsync()).Select(b => b.ToDTO()).ToList();
 
         // GET: api/Basket/5
         [HttpGet("{id}")]
@@ -79,11 +79,11 @@ namespace StoreBackend.Controllers
         // POST: api/Basket
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Basket>> PostBasket(Basket basket)
+        public async Task<ActionResult<BasketDTO>> PostBasket(Basket basket)
         {
             await _basketRepository.CreateAsync(basket);
 
-            return CreatedAtAction("GetBasket", new { id = basket.Id }, basket);
+            return CreatedAtAction(nameof(GetBasket), new { id = basket.Id }, basket.ToDTO());
         }
 
         // DELETE: api/Basket/5
@@ -153,7 +153,8 @@ namespace StoreBackend.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                return Problem(ex.Message);
+
+                return BadRequest(ex.Message);
             }
         }
     }
