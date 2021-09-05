@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using StoreBackend.DTOs;
+using StoreBackend.Exceptions;
 using StoreBackend.Extensions;
 using StoreBackend.Interfaces;
 using StoreBackend.Models;
@@ -18,7 +18,8 @@ namespace StoreBackend.Controllers
         private readonly IBasketControllerFacade _controllerFacade;
 
         public BasketController(
-            IBasketRepository repository, IBasketControllerFacade basketControllerFacade
+            IBasketRepository repository,
+            IBasketControllerFacade basketControllerFacade
         )
         {
             _basketRepository = repository;
@@ -99,5 +100,39 @@ namespace StoreBackend.Controllers
             return NoContent();
         }
 
+        // GET: api/Basket/5/SetDiscountCode/SALE20
+        [HttpGet("{id}/SetDiscountCode/{discountCode}")]
+        public async Task<IActionResult> SetDiscountCode(int id, string discountCode)
+        {
+            try
+            {
+                await _controllerFacade.BasketDiscountService.SetDiscountOnBasketAsync(id, discountCode);
+            }
+            catch (BasketNotFoundException)
+            {
+                return NotFound($"The basket with id {id} does not exist");
+            }
+            catch (DiscountCodeNotFoundException)
+            {
+                return NotFound($"{discountCode} is not a valid discount code");
+            }
+
+            return NoContent();
+        }
+
+        // GET: api/Basket/5/TotalCost
+        [HttpGet("{id}/TotalCost")]
+        public async Task<IActionResult> GetBasketTotalCost(int id)
+        {
+            try
+            {
+                var basketTotalCost = await _controllerFacade.QueryTotalCostOfBasketCommand.Execute(id);
+                return Ok(basketTotalCost);
+            }
+            catch (BasketNotFoundException)
+            {
+                return NotFound($"The basket with id {id} does not exist");
+            }
+        }
     }
 }
