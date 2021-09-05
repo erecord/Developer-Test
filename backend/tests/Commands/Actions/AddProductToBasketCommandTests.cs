@@ -29,7 +29,7 @@ namespace StoreBackend.Tests
                 var productIdToAdd = 1;
                 await _SUT.Execute((BasketId, new[] { productIdToAdd }));
 
-                var productIdsInBasket = await _basketProductRepository.QueryProductIdsInBasketAsync(BasketId); ;
+                var productIdsInBasket = await _basketProductRepository.QueryProductIdsInBasketAsync(BasketId);
 
                 productIdsInBasket.Should().HaveCount(1);
                 productIdsInBasket.Should().Contain(productIdToAdd);
