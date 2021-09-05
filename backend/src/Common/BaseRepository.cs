@@ -58,7 +58,6 @@ namespace StoreBackend.Common
             return entityFound;
         }
 
-        public virtual T ModifyNewEntityBeforeUpdate(T entityFromDb, T newEntity) => newEntity;
 
         public async Task DeleteAsync(T entity)
         {
@@ -81,5 +80,6 @@ namespace StoreBackend.Common
         {
             return _entity.Any(e => e.Id == id);
         }
+        protected virtual T ModifyNewEntityBeforeUpdate(T entityFromDb, T newEntity) => newEntity;
     }
 }
