@@ -12,7 +12,5 @@ namespace StoreBackend.Tests.Factories
             Percentage = discountPercentage,
             ExpiryDate = DateTime.UtcNow.AddDays(7)
         };
-
-
     }
 }

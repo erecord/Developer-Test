@@ -10,7 +10,7 @@ namespace StoreBackend.Tests.Factories
             Id = userId,
             Email = Guid.NewGuid().ToString(),
             Username = Guid.NewGuid().ToString(),
-            Password = Guid.NewGuid().ToString()
+            PasswordHashed = Guid.NewGuid().ToString()
         };
     }
 }
