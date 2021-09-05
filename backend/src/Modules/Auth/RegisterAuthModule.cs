@@ -8,13 +8,9 @@ namespace StoreBackend.Modules
     {
         public RegisterAuthModule(IServiceCollection services)
         {
-            services.AddSingleton<IJwtService>(sp =>
-            {
-                var jwtService = new JwtService();
-                jwtService.RegisterAuthenticationService(services);
-
-                return jwtService;
-            });
+            var jwtService = new JwtService();
+            jwtService.RegisterAuthenticationService(services);
+            services.AddSingleton<IJwtService>(jwtService);
         }
     }
 }
