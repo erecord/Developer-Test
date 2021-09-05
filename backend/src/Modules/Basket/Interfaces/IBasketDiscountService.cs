@@ -5,6 +5,6 @@ namespace StoreBackend.Interfaces
     public interface IBasketDiscountService
     {
         Task SetDiscountOnBasketAsync(int basketId, string discountCode);
-        Task<(decimal basketCostBeforeDiscount, decimal basketCostAfterDiscount)> QueryBasketTotalCostWithDiscountAsync(int basketId);
+        Task<decimal> QueryBasketTotalCostAfterDiscountAsync(int basketId);
     }
 }
