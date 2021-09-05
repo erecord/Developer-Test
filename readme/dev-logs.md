@@ -51,3 +51,5 @@ Set up docker compose environment for dotnet and mssql services.
 # Day 8
 
 - Added SetDiscountCode, GetBasketTotalCost, and GetBasketTotalCostAfterDiscount routes to the BasketController
+- Added tests for BasketController.cs and used Moq
+- Added readme
