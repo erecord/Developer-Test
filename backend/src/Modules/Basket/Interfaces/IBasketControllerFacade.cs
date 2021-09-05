@@ -6,5 +6,7 @@ namespace StoreBackend.Interfaces
         IQueryProductIdsInBasketCommand QueryProductIdsInBasketCommand { get; }
         IRemoveProductsFromBasketCommand RemoveProductsFromBasketCommand { get; }
         IAddProductsToBasketCommand AddProductsToBasketCommand { get; }
+        IBasketDiscountService BasketDiscountService { get; }
+        IQueryTotalCostOfBasketCommand QueryTotalCostOfBasketCommand { get; }
     }
 }

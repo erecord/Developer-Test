@@ -11,5 +11,11 @@ namespace StoreBackend.Repositories
         public BasketRepository(StoreDbContext context) : base(context, context.Basket)
         {
         }
+
+        protected override Basket ModifyNewEntityBeforeUpdate(Basket entityFromDb, Basket newEntity)
+        {
+            newEntity.discountId = entityFromDb.discountId;
+            return newEntity;
+        }
     }
 }

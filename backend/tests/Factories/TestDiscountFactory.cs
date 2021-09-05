@@ -5,7 +5,7 @@ namespace StoreBackend.Tests.Factories
 {
     public static class TestDiscountFactory
     {
-        public static Discount CreateDiscount(int discountId, string discountCode, decimal discountPercentage) => new Discount
+        public static Discount CreateDiscount(int discountId, string discountCode, int discountPercentage) => new Discount
         {
             Id = discountId,
             Code = discountCode,

@@ -8,7 +8,7 @@ namespace StoreBackend.Models
 
         public string Name { get; set; }
 
-        [Column(TypeName = "decimal(16,3)")]
+        [Column(TypeName = "decimal(16,2)")]
         public decimal Price { get; set; }
 
     }

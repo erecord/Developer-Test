@@ -40,22 +40,22 @@ namespace StoreBackend.Services
             await _basketRepository.UpdateAsync(basket);
         }
 
-        public async Task<(decimal basketCostBeforeDiscount, decimal basketCostAfterDiscount)> QueryBasketTotalCostWithDiscountAsync(int basketId)
+        public async Task<decimal> QueryBasketTotalCostAfterDiscountAsync(int basketId)
         {
-            var basket = await _basketRepository.GetOneAsync(basketId);
+            var basket = await _basketRepository.ToPopulatedBasketAsync(basketId);
             if (basket == null)
                 throw new BasketNotFoundException(basketId);
 
             var discountId = basket.discountId;
             if (discountId == null)
-                throw new InvalidOperationException("No discount is associated with this basket");
+                throw new InvalidOperationException("The basket does not have a discount code");
 
             var totalCostOfBasket = await _queryTotalCostOfBasketCommand.Execute(basketId);
 
-            var basketCostAfterDiscount =
+            var basketTotalCostAfterDiscount =
                 _calculateDiscountedPriceCommand.Execute((totalCostOfBasket, basket.Discount.Percentage));
 
-            return (totalCostOfBasket, basketCostAfterDiscount);
+            return basketTotalCostAfterDiscount;
         }
     }
 }

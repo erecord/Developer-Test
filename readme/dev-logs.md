@@ -26,3 +26,28 @@ Set up docker compose environment for dotnet and mssql services.
 - Learnt more about xUnit and Moq
 - Created generic BaseRepository which inherits from a new IRepository to eventually make unit testing and mocking possible.
   - Now all the CRUD logic is the BaseRepository and I just inherit from it and supply the DbContext and the DbSet<T>.
+
+# Day 5 (Evening)
+
+- Added Repository for other entities and refactored their controllers to use the repository instead of depending on DbContext directly.
+- Added StoreBackend.Tests.csproj and researched xUint, Moq, FakeItEasy etc.
+
+# Day 6 (Evening)
+
+- Spent awhile trying to mock the DbContext layer. The solutions I found online all seemed to mock the CRUD operations and then add the entities to an internal List instead of talking to a database. However, intellisense complained about a return type of TEntity instead of the expected EntityEntry<TEntity> which I couldn't figure out.
+- I then found the InMemory Database Provider for EntityFramework which seemingly achieves the same thing as trying to mock the DbContext and add it to a list in the background. The concern is that the tests only prove the InMemory Database Provider functions correctly and show nothing about the production environment: SqlServer Database Provider. But I trust that EntityFramework behaves mostly equivalent between providers (when ignoring InMemory vs. Relational Database differences).
+- Created tests for AddProductIdsToBasketCommand and RemoveProductIdsFromBasketCommand
+
+# Day 7
+
+- Added tests for
+  - QueryProductIdsInBasketCommand
+  - QueryProductsInBasketCommand
+  - QueryTotalCostOfBasketCommand
+  - CalculateDiscountedPriceCommand
+  - BasketDiscountService
+- Added Test Entity Factories to cut down repeated code when setting up a test's DB InMemory context
+
+# Day 8
+
+- Added SetDiscountCode, GetBasketTotalCost, and GetBasketTotalCostAfterDiscount routes to the BasketController

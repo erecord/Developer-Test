@@ -18,10 +18,10 @@ namespace StoreBackend.Tests
         public const int SecondBasketId = 2;
         public const int Discount1Id = 1;
         public const string Discount1Code = "SALE20";
-        public const decimal Discount1Percentage = 20;
+        public const int Discount1Percentage = 20;
         public const int Discount2Id = 2;
         public const string Discount2Code = "SALE10";
-        public const decimal Discount2Percentage = 10;
+        public const int Discount2Percentage = 10;
 
         public const decimal Product1Price = 7.99M;
         private IBasketDiscountService _SUT;
@@ -79,12 +79,11 @@ namespace StoreBackend.Tests
         {
             using (var context = InitAndGetDbContext())
             {
-                var (basketCostBeforeDiscount, basketCostAfterDiscount) = await _SUT.QueryBasketTotalCostWithDiscountAsync(SecondBasketId);
+                var basketCostAfterDiscount = await _SUT.QueryBasketTotalCostAfterDiscountAsync(SecondBasketId);
 
                 var expectedBasketCost = Product1Price;
                 var expectedBasketCostAfterDiscount = _calculateDiscountedPriceCommand.Execute((expectedBasketCost, Discount1Percentage));
 
-                basketCostBeforeDiscount.Should().Be(expectedBasketCost);
                 basketCostAfterDiscount.Should().Be(expectedBasketCostAfterDiscount);
             }
         }
@@ -94,7 +93,7 @@ namespace StoreBackend.Tests
         {
             using (var context = InitAndGetDbContext())
             {
-                Func<Task> act = () => _SUT.QueryBasketTotalCostWithDiscountAsync(BasketId);
+                Func<Task> act = () => _SUT.QueryBasketTotalCostAfterDiscountAsync(BasketId);
 
                 await act.Should().ThrowAsync<InvalidOperationException>();
             }

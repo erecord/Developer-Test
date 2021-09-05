@@ -1,9 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using StoreBackend.DTOs;
+using StoreBackend.Exceptions;
 using StoreBackend.Extensions;
 using StoreBackend.Interfaces;
 using StoreBackend.Models;
@@ -18,7 +19,8 @@ namespace StoreBackend.Controllers
         private readonly IBasketControllerFacade _controllerFacade;
 
         public BasketController(
-            IBasketRepository repository, IBasketControllerFacade basketControllerFacade
+            IBasketRepository repository,
+            IBasketControllerFacade basketControllerFacade
         )
         {
             _basketRepository = repository;
@@ -99,5 +101,60 @@ namespace StoreBackend.Controllers
             return NoContent();
         }
 
+        // GET: api/Basket/5/SetDiscountCode/SALE20
+        [HttpGet("{id}/SetDiscountCode/{discountCode}")]
+        public async Task<IActionResult> SetDiscountCode(int id, string discountCode)
+        {
+            try
+            {
+                await _controllerFacade.BasketDiscountService.SetDiscountOnBasketAsync(id, discountCode);
+            }
+            catch (BasketNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (DiscountCodeNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+
+            return NoContent();
+        }
+
+        // GET: api/Basket/5/TotalCost
+        [HttpGet("{id}/TotalCost")]
+        public async Task<IActionResult> GetBasketTotalCost(int id)
+        {
+            try
+            {
+                var basketTotalCost = await _controllerFacade.QueryTotalCostOfBasketCommand.Execute(id);
+                return Ok(basketTotalCost);
+            }
+            catch (BasketNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        // GET: api/Basket/5/TotalCostAfterDiscount
+        [HttpGet("{id}/TotalCostAfterDiscount")]
+        public async Task<IActionResult> GetBasketTotalCostAfterDiscount(int id)
+        {
+            try
+            {
+                var totalBasketCostAfterDiscount =
+                    await _controllerFacade.BasketDiscountService.QueryBasketTotalCostAfterDiscountAsync(id);
+
+                return Ok(totalBasketCostAfterDiscount);
+            }
+            catch (BasketNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
     }
 }
