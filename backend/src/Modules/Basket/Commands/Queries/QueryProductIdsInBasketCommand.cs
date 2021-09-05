@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using StoreBackend.Exceptions;
 using StoreBackend.Interfaces;
 
 namespace StoreBackend.Commands
@@ -23,7 +24,7 @@ namespace StoreBackend.Commands
         {
             var basket = await _basketRepository.GetOneAsync(basketId);
             if (basket == null)
-                throw new InvalidOperationException($"The basket with id {basketId} does not exist");
+                throw new BasketNotFoundException(basketId);
 
             var basketProducts = await _basketProductRepository.WhereAsync(bp => bp.BasketId.Equals(basketId));
             var productIdsInBasket = basketProducts.Select(bp => bp.ProductId);

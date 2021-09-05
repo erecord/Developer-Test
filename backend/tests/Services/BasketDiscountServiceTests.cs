@@ -89,13 +89,13 @@ namespace StoreBackend.Tests
         }
 
         [Fact]
-        public async void QueryBasketTotalCostWithDiscount_WhenBasketDoesNotHaveDiscountCodeSet_ThrowsDiscountCodeNotFoundException()
+        public async void QueryBasketTotalCostWithDiscount_WhenBasketDoesNotHaveDiscountCodeSet_ThrowsInvalidOperationException()
         {
             using (var context = InitAndGetDbContext())
             {
                 Func<Task> act = () => _SUT.QueryBasketTotalCostWithDiscountAsync(BasketId);
 
-                await act.Should().ThrowAsync<DiscountCodeNotFoundException>();
+                await act.Should().ThrowAsync<InvalidOperationException>();
             }
         }
 

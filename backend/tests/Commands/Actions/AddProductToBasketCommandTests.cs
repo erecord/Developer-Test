@@ -83,7 +83,7 @@ namespace StoreBackend.Tests
             var products = new[] {
                 TestProductFactory.CreateProduct(1, 7.99M),
                 TestProductFactory.CreateProduct(2, 300M),
-                TestProductFactory.CreateProduct(3, 5M),
+                TestProductFactory.CreateProduct(3, 5M)
             };
 
             var basket = TestBasketFactory.CreateEmptyBasket(BasketId, user.Id);

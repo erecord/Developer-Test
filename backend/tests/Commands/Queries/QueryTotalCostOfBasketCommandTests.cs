@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using StoreBackend.Commands;
 using StoreBackend.DbContexts;
+using StoreBackend.Exceptions;
 using StoreBackend.Interfaces;
 using StoreBackend.Repositories;
 using StoreBackend.Tests.Factories;
@@ -48,14 +49,14 @@ namespace StoreBackend.Tests
         }
 
         [Fact]
-        public async void Execute_WhenBasketIdDoesNotExist_ThrowsInvalidOperationException()
+        public async void Execute_WhenBasketIdDoesNotExist_ThrowsBasketNotFoundException()
         {
             using (var context = InitAndGetDbContext())
             {
                 var nonexistingBasketId = -1;
                 Func<Task> act = () => _SUT.Execute(nonexistingBasketId);
 
-                await act.Should().ThrowAsync<InvalidOperationException>();
+                await act.Should().ThrowAsync<BasketNotFoundException>();
             }
         }
 

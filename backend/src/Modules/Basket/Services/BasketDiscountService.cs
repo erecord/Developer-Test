@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using StoreBackend.Exceptions;
 using StoreBackend.Extensions;
@@ -29,11 +30,11 @@ namespace StoreBackend.Services
         {
             var basket = await _basketRepository.GetOneAsync(basketId);
             if (basket == null)
-                throw new BasketNotFoundException();
+                throw new BasketNotFoundException(basketId);
 
             var discount = await _discountRepository.QueryByDiscountCode(discountCode);
             if (discount == null)
-                throw new DiscountCodeNotFoundException();
+                throw new DiscountCodeNotFoundException(discountCode);
 
             basket.discountId = discount.Id;
             await _basketRepository.UpdateAsync(basket);
@@ -43,10 +44,11 @@ namespace StoreBackend.Services
         {
             var basket = await _basketRepository.GetOneAsync(basketId);
             if (basket == null)
-                throw new BasketNotFoundException();
+                throw new BasketNotFoundException(basketId);
 
-            if (basket.discountId == null)
-                throw new DiscountCodeNotFoundException();
+            var discountId = basket.discountId;
+            if (discountId == null)
+                throw new InvalidOperationException("No discount is associated with this basket");
 
             var totalCostOfBasket = await _queryTotalCostOfBasketCommand.Execute(basketId);
 
