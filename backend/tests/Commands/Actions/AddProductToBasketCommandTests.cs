@@ -6,8 +6,8 @@ using StoreBackend.DbContexts;
 using StoreBackend.Extensions;
 using StoreBackend.Factories;
 using StoreBackend.Interfaces;
-using StoreBackend.Models;
 using StoreBackend.Repositories;
+using StoreBackend.Tests.Factories;
 using Xunit;
 
 namespace StoreBackend.Tests
@@ -78,43 +78,18 @@ namespace StoreBackend.Tests
         {
             var context = GetDbContext();
 
-            var user = new User
-            {
-                Id = 1,
-                Email = "test@gmail.com",
-                Username = "Test",
-                Password = "password1"
+            var user = TestUserFactory.CreateRandomUser(1);
+
+            var products = new[] {
+                TestProductFactory.CreateProduct(1, 7.99M),
+                TestProductFactory.CreateProduct(2, 300M),
+                TestProductFactory.CreateProduct(3, 5M),
             };
 
-            var basket = new Basket
-            {
-                Id = BasketId,
-                userId = 1
-            };
-
-            var product1 = new Product
-            {
-                Id = 1,
-                Name = "Book",
-                Price = 7.99M
-            };
-
-            var product2 = new Product
-            {
-                Id = 2,
-                Name = "Computer",
-                Price = 300M
-            };
-
-            var product3 = new Product
-            {
-                Id = 3,
-                Name = "Hat",
-                Price = 5M
-            };
+            var basket = TestBasketFactory.CreateEmptyBasket(BasketId, user.Id);
 
             context.User.Add(user);
-            context.Product.AddRange(product1, product2, product3);
+            context.Product.AddRange(products);
             context.Basket.Add(basket);
 
             context.SaveChanges();

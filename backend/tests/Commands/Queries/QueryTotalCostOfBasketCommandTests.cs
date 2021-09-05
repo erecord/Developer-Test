@@ -4,8 +4,8 @@ using FluentAssertions;
 using StoreBackend.Commands;
 using StoreBackend.DbContexts;
 using StoreBackend.Interfaces;
-using StoreBackend.Models;
 using StoreBackend.Repositories;
+using StoreBackend.Tests.Factories;
 using Xunit;
 
 namespace StoreBackend.Tests
@@ -18,9 +18,9 @@ namespace StoreBackend.Tests
         private const int BasketId = 1;
         private const int SecondBasketId = 2;
 
-        private decimal product1Cost = 7.99M;
-        private decimal product2Cost = 300M;
-        private decimal product3Cost = 5M;
+        private const decimal product1Cost = 7.99M;
+        private const decimal product2Cost = 300M;
+        private const decimal product3Cost = 5M;
 
 
         [Fact]
@@ -63,78 +63,22 @@ namespace StoreBackend.Tests
         {
             var context = GetDbContext();
 
-            var user1 = new User
-            {
-                Id = 1,
-                Email = "test@gmail.com",
-                Username = "Test",
-                Password = "password1"
+            var user1 = TestUserFactory.CreateRandomUser(1);
+            var user2 = TestUserFactory.CreateRandomUser(2);
+
+            var products = new[] {
+                TestProductFactory.CreateProduct(1, product1Cost),
+                TestProductFactory.CreateProduct(2, product2Cost),
+                TestProductFactory.CreateProduct(3, product3Cost),
             };
 
-            var user2 = new User
-            {
-                Id = 2,
-                Email = "test2@gmail.com",
-                Username = "Test2",
-                Password = "password2"
-            };
-
-            var basket1 = new Basket
-            {
-                Id = BasketId,
-                userId = 1
-            };
-
-            var basket2 = new Basket
-            {
-                Id = SecondBasketId,
-                userId = 2
-            };
-
-            var product1 = new Product
-            {
-                Id = 1,
-                Name = "Book",
-                Price = product1Cost
-            };
-
-            var product2 = new Product
-            {
-                Id = 2,
-                Name = "Computer",
-                Price = product2Cost
-            };
-
-            var product3 = new Product
-            {
-                Id = 3,
-                Name = "Hat",
-                Price = product3Cost
-            };
-
-            var basketProduct1 = new BasketProduct
-            {
-                BasketId = BasketId,
-                ProductId = 1
-            };
-
-            var basketProduct2 = new BasketProduct
-            {
-                BasketId = BasketId,
-                ProductId = 2
-            };
-
-            var basketProduct3 = new BasketProduct
-            {
-                BasketId = BasketId,
-                ProductId = 3
-            };
+            var (basket1, basketProductsList1) = TestBasketFactory.CreateBasketWithExistingProducts(BasketId, user1.Id, products);
+            var basket2 = TestBasketFactory.CreateEmptyBasket(SecondBasketId, user2.Id);
 
             context.User.Add(user1);
-            context.Product.AddRange(product1, product2, product3);
-            context.Basket.Add(basket1);
-            context.Basket.Add(basket2);
-            context.BasketProducts.AddRange(basketProduct1, basketProduct2, basketProduct3);
+            context.Product.AddRange(products);
+            context.Basket.AddRange(basket1, basket2);
+            context.BasketProducts.AddRange(basketProductsList1);
 
             context.SaveChanges();
 

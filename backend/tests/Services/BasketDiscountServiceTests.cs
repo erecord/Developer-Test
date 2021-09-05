@@ -5,9 +5,9 @@ using StoreBackend.Commands;
 using StoreBackend.DbContexts;
 using StoreBackend.Exceptions;
 using StoreBackend.Interfaces;
-using StoreBackend.Models;
 using StoreBackend.Repositories;
 using StoreBackend.Services;
+using StoreBackend.Tests.Factories;
 using Xunit;
 
 namespace StoreBackend.Tests
@@ -21,6 +21,7 @@ namespace StoreBackend.Tests
         public const decimal Discount1Percentage = 20;
         public const int Discount2Id = 2;
         public const string Discount2Code = "SALE10";
+        public const decimal Discount2Percentage = 10;
 
         public const decimal Product1Price = 7.99M;
         public const decimal Product2Price = 300M;
@@ -103,88 +104,26 @@ namespace StoreBackend.Tests
         {
             var context = GetDbContext();
 
-            var user1 = new User
-            {
-                Id = 1,
-                Email = "test@gmail.com",
-                Username = "Test",
-                Password = "password1"
+            var user1 = TestUserFactory.CreateRandomUser(1);
+            var user2 = TestUserFactory.CreateRandomUser(2);
+
+            var products = new[] {
+                TestProductFactory.CreateProduct(1, 7.99M),
+                TestProductFactory.CreateProduct(2, 300M),
             };
 
-            var user2 = new User
-            {
-                Id = 2,
-                Email = "test2@gmail.com",
-                Username = "Test2",
-                Password = "password2"
-            };
+            var (basket1, basketProductsList1) = TestBasketFactory.CreateBasketWithExistingProducts(BasketId, user1.Id, products);
+            var (basket2, basketProductsList2) = TestBasketFactory.CreateBasketWithExistingProducts(SecondBasketId, user2.Id, new[] { products[0] });
+            basket2.discountId = Discount1Id;
 
-            var basket1 = new Basket
-            {
-                Id = BasketId,
-                userId = 1
-            };
-
-            var basket2 = new Basket
-            {
-                Id = SecondBasketId,
-                userId = 2,
-                discountId = Discount1Id
-            };
-
-            var product1 = new Product
-            {
-                Id = 1,
-                Name = "Book",
-                Price = Product1Price
-            };
-
-            var product2 = new Product
-            {
-                Id = 2,
-                Name = "Computer",
-                Price = Product2Price
-            };
-
-
-            var basketProduct1 = new BasketProduct
-            {
-                BasketId = BasketId,
-                ProductId = 1
-            };
-
-            var basketProduct2 = new BasketProduct
-            {
-                BasketId = BasketId,
-                ProductId = 2
-            };
-
-            var basketProduct3 = new BasketProduct
-            {
-                BasketId = SecondBasketId,
-                ProductId = 1
-            };
-
-            var discount1 = new Discount
-            {
-                Id = Discount1Id,
-                Code = Discount1Code,
-                Percentage = Discount1Percentage,
-                ExpiryDate = DateTime.UtcNow.AddDays(7)
-            };
-
-            var discount2 = new Discount
-            {
-                Id = Discount2Id,
-                Code = Discount2Code,
-                Percentage = 10,
-                ExpiryDate = DateTime.UtcNow.AddDays(7)
-            };
+            var discount1 = TestDiscountFactory.CreateDiscount(Discount1Id, Discount1Code, Discount1Percentage);
+            var discount2 = TestDiscountFactory.CreateDiscount(Discount2Id, Discount2Code, Discount2Percentage);
 
             context.User.AddRange(user1, user2);
-            context.Product.AddRange(product1, product2);
+            context.Product.AddRange(products);
             context.Basket.AddRange(basket1, basket2);
-            context.BasketProducts.AddRange(basketProduct1, basketProduct2, basketProduct3);
+            context.BasketProducts.AddRange(basketProductsList1);
+            context.BasketProducts.AddRange(basketProductsList2);
             context.Discount.AddRange(discount1, discount2);
 
             context.SaveChanges();

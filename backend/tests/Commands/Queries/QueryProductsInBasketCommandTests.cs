@@ -8,6 +8,7 @@ using StoreBackend.DbContexts;
 using StoreBackend.Interfaces;
 using StoreBackend.Models;
 using StoreBackend.Repositories;
+using StoreBackend.Tests.Factories;
 using Xunit;
 
 namespace StoreBackend.Tests
@@ -16,7 +17,7 @@ namespace StoreBackend.Tests
     {
         private IQueryProductsInBasketCommand _SUT;
 
-        private List<Product> _testProducts = new List<Product>();
+        private Product[] _testProducts;
         private const int BasketId = 1;
         private const int SecondBasketId = 2;
 
@@ -59,80 +60,22 @@ namespace StoreBackend.Tests
         {
             var context = GetDbContext();
 
-            var user1 = new User
-            {
-                Id = 1,
-                Email = "test@gmail.com",
-                Username = "Test",
-                Password = "password1"
+            var user1 = TestUserFactory.CreateRandomUser(1);
+            var user2 = TestUserFactory.CreateRandomUser(2);
+
+            _testProducts = new[] {
+                TestProductFactory.CreateProduct(1, 7.99M),
+                TestProductFactory.CreateProduct(2, 300M),
+                TestProductFactory.CreateProduct(3, 5M),
             };
 
-            var user2 = new User
-            {
-                Id = 2,
-                Email = "test2@gmail.com",
-                Username = "Test2",
-                Password = "password2"
-            };
+            var (basket1, basketProductsList1) = TestBasketFactory.CreateBasketWithExistingProducts(BasketId, user1.Id, _testProducts);
+            var basket2 = TestBasketFactory.CreateEmptyBasket(SecondBasketId, user2.Id);
 
-            var basket1 = new Basket
-            {
-                Id = BasketId,
-                userId = 1
-            };
-
-            var basket2 = new Basket
-            {
-                Id = SecondBasketId,
-                userId = 2
-            };
-
-            _testProducts.AddRange(new[]
-            {
-                new Product
-                {
-                    Id = 1,
-                    Name = "Book",
-                    Price = 7.99M
-                },
-                new Product
-                {
-                    Id = 2,
-                    Name = "Computer",
-                    Price = 300M
-                },
-                new Product
-                {
-                    Id = 3,
-                    Name = "Hat",
-                    Price = 5M
-                }
-            });
-
-
-            var basketProduct1 = new BasketProduct
-            {
-                BasketId = BasketId,
-                ProductId = 1
-            };
-
-            var basketProduct2 = new BasketProduct
-            {
-                BasketId = BasketId,
-                ProductId = 2
-            };
-
-            var basketProduct3 = new BasketProduct
-            {
-                BasketId = BasketId,
-                ProductId = 3
-            };
-
-            context.User.Add(user1);
-            context.User.Add(user2);
+            context.User.AddRange(user1, user2);
             context.Product.AddRange(_testProducts);
             context.Basket.AddRange(basket1, basket2);
-            context.BasketProducts.AddRange(basketProduct1, basketProduct2, basketProduct3);
+            context.BasketProducts.AddRange(basketProductsList1);
 
             context.SaveChanges();
 
