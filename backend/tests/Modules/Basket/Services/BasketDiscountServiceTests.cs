@@ -18,10 +18,10 @@ namespace StoreBackend.Tests
         public const int SecondBasketId = 2;
         public const int Discount1Id = 1;
         public const string Discount1Code = "SALE20";
-        public const decimal Discount1Percentage = 20;
+        public const int Discount1Percentage = 20;
         public const int Discount2Id = 2;
         public const string Discount2Code = "SALE10";
-        public const decimal Discount2Percentage = 10;
+        public const int Discount2Percentage = 10;
 
         public const decimal Product1Price = 7.99M;
         private IBasketDiscountService _SUT;
