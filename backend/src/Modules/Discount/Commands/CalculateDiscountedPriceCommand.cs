@@ -14,8 +14,8 @@ namespace StoreBackend.Commands
             var scaledDiscountPercentage = parameters.discountPercentage / 100;
             var discountSavings = parameters.originalPrice * scaledDiscountPercentage;
 
-            var totalCostOfBasketWithDiscount = parameters.originalPrice - discountSavings;
-            return totalCostOfBasketWithDiscount;
+            var priceAfterDiscount = parameters.originalPrice - discountSavings;
+            return priceAfterDiscount;
         }
     }
 }
