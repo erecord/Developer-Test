@@ -6,6 +6,6 @@ namespace StoreBackend.DTOs
     public record UpdateBasketDTO
     {
         public Basket Basket { get; init; }
-        public List<int> ProductIds { get; init; }
+        public IEnumerable<int> ProductIds { get; init; }
     }
 }

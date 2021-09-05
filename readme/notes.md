@@ -2,6 +2,7 @@
 
 - Configure HTTPS and production environment.
 - Add NGINX reverse proxy in production to hide the other docker services and allow for load balancing in the future.
+- Translations
 
 # Issues
 
