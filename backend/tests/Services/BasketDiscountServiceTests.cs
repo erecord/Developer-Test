@@ -79,11 +79,12 @@ namespace StoreBackend.Tests
         {
             using (var context = InitAndGetDbContext())
             {
-                var (_, basketCostAfterDiscount) = await _SUT.QueryBasketTotalCostWithDiscountAsync(SecondBasketId);
+                var (basketCostBeforeDiscount, basketCostAfterDiscount) = await _SUT.QueryBasketTotalCostWithDiscountAsync(SecondBasketId);
 
                 var expectedBasketCost = Product1Price;
                 var expectedBasketCostAfterDiscount = _calculateDiscountedPriceCommand.Execute((expectedBasketCost, Discount1Percentage));
 
+                basketCostBeforeDiscount.Should().Be(expectedBasketCost);
                 basketCostAfterDiscount.Should().Be(expectedBasketCostAfterDiscount);
             }
         }
