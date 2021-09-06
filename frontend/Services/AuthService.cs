@@ -15,10 +15,9 @@ namespace Store.Frontend.Services
             _http = http;
         }
 
-        public async Task<string> Authenticate(string email, string password)
+        public async Task<string> Authenticate(AuthUserDTO authUserDTO)
         {
-            var user = new AuthUserDTO { Email = email, Password = password };
-            var dataAsString = JsonConvert.SerializeObject(user);
+            var dataAsString = JsonConvert.SerializeObject(authUserDTO);
             var content = new StringContent(dataAsString);
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
