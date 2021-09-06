@@ -4,11 +4,17 @@ services:
   backend:
     image: store_backend
     container_name: store_backend
-    env_file:
-      - ./backend/src/dev.env
     volumes:
       - ./backend:/source
       - AspDataProtectionKeys:/root/.aspnet/DataProtection-Keys
+
+  frontend:
+    image: store_frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./frontend:/source
 
   db:
     image: store_db

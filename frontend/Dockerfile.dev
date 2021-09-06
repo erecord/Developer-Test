@@ -1,0 +1,15 @@
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+WORKDIR /source
+
+RUN apt-get install -y curl \
+  && curl -sL https://deb.nodesource.com/setup_9.x | bash - \
+  && apt-get install -y nodejs \
+  && curl -L https://www.npmjs.com/install.sh | sh
+
+COPY Store.Frontend.csproj .
+RUN dotnet restore
+
+# copy and publish app and libraries
+COPY . .
+ENTRYPOINT [ "dotnet", "watch","run", "-r", "linux-x64", "--launch-profile", "Store.Frontend"]
+# CMD tail -f /dev/null
