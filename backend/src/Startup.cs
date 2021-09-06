@@ -32,6 +32,7 @@ namespace StoreBackend
                     builder =>
                     {
                         builder.WithOrigins(Environment.GetEnvironmentVariable("FrontendUrl"));
+                        builder.AllowAnyHeader();
                     });
             });
 
